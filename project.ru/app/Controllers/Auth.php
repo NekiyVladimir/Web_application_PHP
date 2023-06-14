@@ -5,6 +5,7 @@ use App\Services\Router;
 
 session_start();
 
+
 class Auth
 {
 
@@ -13,6 +14,181 @@ class Auth
 		$_SESSION = array();
 		header('Location: /login');
 
+	}
+
+	public static function bd()
+	{
+		$res=file_get_contents("database/db.json");
+//		$res=json_decode($res, true);
+		return $res;
+	}
+
+	public static function logintest($username, $password, $res)
+	{
+		if (!array_key_exists($username, $res)) {
+		$response = [
+			"status" => false,
+			"msg1" => 'Пользователя с таким ником нету!'
+		];
+		return $response;
+
+		} else {
+
+			if (md5($res[$username]['salt'].$password) === $res[$username]['password']) {
+				$response = [
+					"status" => true
+				];
+				$_SESSION['prem'] = [
+					"username" => $username
+				];
+				return $response;
+			} else {
+				$response = [
+					"status" => false,
+					"msg2" => 'Пароль неверный!',
+					"msg1" => 'Отлично!'
+				];
+				return $response;
+			}
+		}
+	}
+
+
+	public static function registertest($username, $password, $password_confirm, $email, $full_name, $res)
+	{
+
+		function generateSalt() // соль для пароля
+			{
+				$salt = '';
+				$saltLength = 8;
+
+				for($i = 0; $i < $saltLength; $i++) {
+					$salt .= chr(mt_rand(33, 126));
+				}
+
+				return $salt;
+			}
+
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$response = [
+				"status" => false,
+				"msg1" => 'E-mail адрес указан не верно!'
+			];
+			return $response;
+		} elseif (strlen($username) < 6) {
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => 'Username должен быть не менее 6 символов!'
+			];
+			return $response;
+		} elseif (preg_match("|\s|", $username) ){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => 'Пробелы в этом поле не допустимы!'
+			];
+			return $response;
+		}elseif(empty($username)){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => 'Обязательное поле для заполнения!'
+			];
+			return $response;
+		} elseif (array_key_exists($username, $res)) {
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => 'Такой пользователь уже существует!'
+			];
+			return $response;
+		}
+		if (strlen($full_name) < 2) {
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => 'Имя пользователя должно быть не менее 2 символов!'
+			];
+			return $response;
+		} elseif (!ctype_alpha($full_name)){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => 'Имя пользователя должно содержать только буквы!'
+			];
+			return $response;
+		} elseif (strlen($password) < 6){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => null,
+				"msg4" => 'Пароль должен быть не менее 6 символов!'
+			];
+			return $response;
+		} elseif (preg_match("|\s|", $password)) {
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => null,
+				"msg4" => 'Пробелы не допустимы. Пароль должен содержать цифры и буквы!'
+			];
+			return $response;
+		} elseif (!preg_match("/[0-9]{1}/", $password)){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => null,
+				"msg4" => 'Цифр нет. Пароль должен содержать цифры и буквы!'
+			];
+			return $response;
+		} elseif (!preg_match("/[a-zа-яё]{1}/i",$password)){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => null,
+				"msg4" => 'Букв нет. Пароль должен содержать цифры и буквы!'
+			];
+			return $response;
+		} elseif ($password !== $password_confirm){
+			$response = [
+				"status" => false,
+				"msg1" => null,
+				"msg2" => null,
+				"msg3" => null,
+				"msg4" => null,
+				"msg5" => 'Пароли не совпадают!'
+			];
+			return $response;
+		} else {
+			$salt = generateSalt(); // соль
+			$password = md5($salt . $password); // соленый пароль
+			$people['full_name']=$full_name;
+			$people['username']=$username;
+			$people['email']=$email;
+			$people['password']=$password;
+			$people['salt']=$salt;
+			$res1[$username]=$people;
+
+
+
+			$new = array_merge($res, $res1);
+			$new=json_encode($new, JSON_UNESCAPED_UNICODE);
+			file_put_contents("database/db.json", $new);
+
+			$response = [
+				"status" => true,
+				"msg5" => null
+			];
+			return $response;
+
+		}
 	}
 
 	public function login($data)
@@ -78,7 +254,11 @@ class Auth
 			$_SESSION['message1'] = 'Username должен быть не менее 6 символов';
 			header('Location: /register');
 			exit;
-		} elseif(empty($username)){
+		} elseif (preg_match("|\s|", $username) ){
+			$_SESSION['message1'] = 'Пробелы в этом поле не допустимы';
+			header('Location: /register');
+			exit;
+		}elseif(empty($username)){
 			$_SESSION['message1'] = 'Обязательное поле для заполнения';
 			header('Location: /register');
 			exit;
@@ -100,8 +280,16 @@ class Auth
 			$_SESSION['message3'] = 'Пароль должен быть не менее 6 символов';
 			header('Location: /register');
 			exit;
-		} elseif (!ctype_alnum($password)){
-			$_SESSION['message3'] = 'Пароль должен пароль должен содержать цифры и буквы';
+		} elseif (preg_match("|\s|", $password)) {
+			$_SESSION['message3'] = 'Пробелы не допустимы. Пароль должен содержать цифры и буквы';
+			header('Location: /register');
+			exit;
+		} elseif (!preg_match("/[0-9]{1}/", $password)){
+			$_SESSION['message3'] = 'Цифр нет. Пароль должен содержать цифры и буквы';
+			header('Location: /register');
+			exit;
+		}elseif (!preg_match("/[a-zа-яё]{1}/i",$password)){
+			$_SESSION['message3'] = 'Букв нет. Пароль должен содержать цифры и буквы';
 			header('Location: /register');
 			exit;
 		}
@@ -129,3 +317,5 @@ class Auth
 		}
 	}
 }
+
+?>

@@ -14,7 +14,7 @@
       <a class="nav-link" href="/login">Login</a>
       <?php
     }else {?>
-      <a class="nav-link" href="/profile">Hello, <?php print_r($_SESSION['prem']['full_name']); ?></a>
+      <a class="nav-link" href="/profile">Hello, <?php print_r($_SESSION['prem']['username']); ?></a>
       <?php
     }
     ?>

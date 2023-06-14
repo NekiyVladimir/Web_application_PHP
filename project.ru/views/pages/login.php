@@ -20,39 +20,26 @@ session_start();
 ?>
 <div class="container">
 <h2 class="mt-4">Sing In</h2>
-<form class="mt-4" action="/auth/login" method="post" enctype="multipart/form-data">
+<form id="loginform">
   <div class="form-group">
     <label for="username">Username</label>
-    <input type="text" name="username" class="form-control" id="username"value="<?php
-              if ($_SESSION['username']) {
-                echo $_SESSION['username'];
-              }
-              unset($_SESSION['username']);
-            ?>">
+    <input type="text" name="username" class="form-control" required id="username">
   </div>
-  <?php
-          if ($_SESSION['message']) {
-            echo '<p>' . $_SESSION['message'] . '</p>';
-          }
-          unset($_SESSION['message']);
-        ?>
+  <p class="msg1"></p>
   <div class="mb-3">
     <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input type="password" class="form-control" name="password"value="<?php
-              if ($_SESSION['password']) {
-                echo $_SESSION['password'];
-              }
-              unset($_SESSION['password']);
-            ?>">
+    <input type="password" class="form-control" required name="password">
   </div>
-  <?php
-          if ($_SESSION['message0']) {
-            echo '<p>' . $_SESSION['message0'] . '</p>';
-          }
-          unset($_SESSION['message0']);
-        ?>
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <p class="msg2"></p>
+  <button type="submit" id="elem" disabled class="btn btn-primary">Submit</button>
+  <script>
+          let elem = document.querySelector('#elem');
+          elem.disabled = false;
+        </script>
+        <noscript>Извините, Ваш браузер не поддерживает JS. Регистрация не возможна!</noscript>
 </form>
 </div>
+<script src="assets/js/jquery.js"></script>
+<script src="assets/js/main.js"></script>
 </body>
 </html>

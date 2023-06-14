@@ -19,84 +19,41 @@
     ?>
   <div class="container">
     <h2 class="mt-4">Sing Up</h2>
-      <form class="mt-4" action="/auth/register" method="post"  enctype="multipart/form-data">
+      <form id="registerform">
         <div class="form-group">
           <label for="email">Email address</label>
-            <input type="email" name="email" class="form-control" id="email" value="<?php
-              if ($_SESSION['email']) {
-                echo $_SESSION['email'];
-              }
-              unset($_SESSION['email']);
-            ?>" >
+            <input type="email" name="email" class="form-control" required id="email">
         </div>
-        <?php
-          if ($_SESSION['message0']) {
-            echo '<p>' . $_SESSION['message0'] . '</p>';
-          }
-          unset($_SESSION['message0']);
-        ?>
+        <p class="msg1"></p>
         <div class="form-group">
           <label for="username">Username</label>
-            <input type="text" name="username" class="form-control" id="username" value="<?php
-              if ($_SESSION['username']) {
-                echo $_SESSION['username'];
-              }
-              unset($_SESSION['username']);
-            ?>">
-            <?php
-              if ($_SESSION['message1']) {
-                echo '<p>' . $_SESSION['message1'] . '</p>';
-              }
-              unset($_SESSION['message1']);
-            ?>
+            <input type="text" name="username" class="form-control" id="username" required>
         </div>
+        <p class="msg2"></p>
         <div class="form-group">
           <label for="full_name">Full Name</label>
-            <input type="text" name="full_name" class="form-control" id="full_name" value="<?php
-              if ($_SESSION['full_name']) {
-                echo $_SESSION['full_name'];
-              }
-              unset($_SESSION['full_name']);
-            ?>">
+            <input type="text" name="full_name" class="form-control" id="full_name" required>
         </div>
-        <?php
-          if ($_SESSION['message2']) {
-            echo '<p>' . $_SESSION['message2'] . '</p>';
-          }
-          unset($_SESSION['message2']);
-        ?>
+        <p class="msg3"></p>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-            <input type="password" name="password" class="form-control" id="password" value="<?php
-              if ($_SESSION['password']) {
-                echo $_SESSION['password'];
-              }
-              unset($_SESSION['password']);
-            ?>">
+            <input type="password" name="password" class="form-control" id="password" required>
         </div>
-        <?php
-          if ($_SESSION['message3']) {
-            echo '<p>' . $_SESSION['message3'] . '</p>';
-          }
-          unset($_SESSION['message3']);
-        ?>
+        <p class="msg4"></p>
         <div class="mb-3">
           <label for="password_confirm" class="form-label">Password Confirmation</label>
-            <input type="password" name="password_confirm" class="form-control" id="password_confirm" value="<?php
-              if ($_SESSION['password_confirm']) {
-                echo $_SESSION['password_confirm'];
-              }
-              unset($_SESSION['password_confirm']);
-            ?>">
+            <input type="password" name="password_confirm" class="form-control" id="password_confirm" required>
         </div>
-        <?php
-          if ($_SESSION['message4']) {
-            echo '<p>' . $_SESSION['message4'] . '</p>';
-          }
-          unset($_SESSION['message4']);
-        ?>
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <p class="msg5"></p>
+        <button type="submit" id="elem2" disabled class="btn btn-primary">Submit</button>
+        <script>
+          let elem2 = document.querySelector('#elem2');
+          elem2.disabled = false;
+        </script>
+        <noscript>Извините, Ваш браузер не поддерживает JS. Регистрация не возможна!</noscript>
       </form>
     </div>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/main.js"></script>
   </body>
 </html>

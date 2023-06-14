@@ -4,4 +4,5 @@
  	<meta http-equiv="X-UA-Compatible" content="ie=edge">
  	<title>Авторизация</title>
  	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+ 	<script src="/assets/js/jquery.js"></script>
 </head>
